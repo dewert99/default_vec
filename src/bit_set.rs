@@ -24,6 +24,10 @@ impl<I> Clone for BitSet<I> {
     fn clone(&self) -> Self {
         BitSet(self.0.clone(), PhantomData)
     }
+
+    fn clone_from(&mut self, source: &Self) {
+        self.0.clone_from(&source.0)
+    }
 }
 
 #[inline]

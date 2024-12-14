@@ -1,5 +1,5 @@
 use alloc::boxed::Box;
-use core::fmt::Debug;
+use core::fmt::{Debug, Formatter};
 use core::marker::PhantomData;
 use core::ops::{Index, IndexMut};
 use core::{mem, slice};
@@ -13,9 +13,35 @@ use serde::{Deserialize, Serialize};
 /// It resizes its heap allocation whenever an element that wouldn't otherwise fit in memory is added
 /// and doesn't ever shrink its memory so it could end of wasting memory if an element is added with
 /// a large index and then removed
-#[derive(Debug, Default, Clone)]
 #[cfg_attr(feature = "serde-1", derive(Serialize, Deserialize))]
-pub struct DefaultVec<T, I: Into<usize> = usize>(Box<[T]>, PhantomData<I>);
+pub struct DefaultVec<T, I = usize>(Box<[T]>, PhantomData<I>);
+
+impl<T, I> Default for DefaultVec<T, I> {
+    fn default() -> Self {
+        DefaultVec(Box::default(), PhantomData)
+    }
+}
+
+impl<T: Clone + Default, I: Into<usize>> Clone for DefaultVec<T, I> {
+    fn clone(&self) -> Self {
+        DefaultVec(self.0.clone(), PhantomData)
+    }
+
+    fn clone_from(&mut self, source: &Self) {
+        if source.capacity() > self.capacity() {
+            self.reserve(source.capacity())
+        }
+        for (this, source) in self.iter_mut().zip(source.iter()) {
+            this.clone_from(source)
+        }
+    }
+}
+
+impl<T: Debug + Default, I: Into<usize>> Debug for DefaultVec<T, I> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 
 pub trait ConstDefault: Default + 'static {
     /// Constant version of default value

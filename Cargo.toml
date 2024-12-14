@@ -2,6 +2,8 @@
 name = "default-vec"
 version = "0.1.0"
 edition = "2021"
+description = "A simple `Vec`-like data structure with default elements and a bitset built using it"
+license = "MIT"
 
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"], optional = true }

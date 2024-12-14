@@ -7,4 +7,4 @@ mod bit_set;
 mod default_vec;
 
 pub use bit_set::BitSet;
-pub use default_vec::DefaultVec;
+pub use default_vec::{ConstDefault, DefaultVec};

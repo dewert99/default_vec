@@ -38,7 +38,9 @@ fn split(x: usize) -> (usize, Elt) {
 
 impl<I: Into<usize>> BitSet<I> {
     /// Adds an element to the set
+    ///
     /// If the set did not have this value present, true is returned.
+    ///
     /// If the set did have this value present, false is returned.
     ///
     /// ```rust
@@ -55,7 +57,8 @@ impl<I: Into<usize>> BitSet<I> {
         res
     }
 
-    /// Removes an element form the set
+    /// Removes an element form the set.
+    ///
     /// Returns whether the value was present in the set.
     ///
     /// ```rust
@@ -96,6 +99,7 @@ impl<I: Into<usize>> BitSet<I> {
 
 impl<I: From<usize> + Into<usize> + Copy> BitSet<I> {
     /// Iterate over all elements in the set
+    ///
     /// Run time is proportional to the largest element that has ever been in the set
     pub fn iter(&self) -> impl Iterator<Item = I> + '_ {
         let max = self.0.capacity() * (Elt::BITS as usize);

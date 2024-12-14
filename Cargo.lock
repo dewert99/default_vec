@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "default-vec"
+name = "default-vec2"
 version = "0.1.0"
 dependencies = [
  "serde",

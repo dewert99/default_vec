@@ -38,7 +38,7 @@ impl<I: Into<usize>> BitSet<I> {
     /// If the set did have this value present, false is returned.
     ///
     /// ```rust
-    /// use default_vec::BitSet;
+    /// use default_vec2::BitSet;
     /// let mut s: BitSet<usize> = BitSet::default();
     /// assert!(s.insert(0));
     /// assert!(!s.insert(0));
@@ -55,7 +55,7 @@ impl<I: Into<usize>> BitSet<I> {
     /// Returns whether the value was present in the set.
     ///
     /// ```rust
-    /// use default_vec::BitSet;
+    /// use default_vec2::BitSet;
     /// let mut s: BitSet<usize> = BitSet::default();
     /// assert!(!s.remove(0));
     /// s.insert(0);
@@ -93,7 +93,6 @@ impl<I: Into<usize>> BitSet<I> {
 impl<I: From<usize> + Into<usize> + Copy> BitSet<I> {
     /// Iterate over all elements in the set
     /// Run time is proportional to the largest element that has ever been in the set
-
     pub fn iter(&self) -> impl Iterator<Item = I> + '_ {
         let max = self.0.capacity() * (Elt::BITS as usize);
         (0..max).map(I::from).filter(|x| self.contains(*x))
@@ -105,7 +104,7 @@ impl<'a, I> BitAndAssign<&'a BitSet> for BitSet<I> {
     ///
     /// ### Example:
     /// ```
-    /// use default_vec::BitSet;
+    /// use default_vec2::BitSet;
     /// let mut s1: BitSet<usize> = BitSet::from_iter([0, 1]);
     /// let s2 = BitSet::from_iter([0, 42]);
     /// s1 &= &s2;
@@ -128,7 +127,7 @@ impl<'a, I> BitOrAssign<&'a BitSet> for BitSet<I> {
     ///
     /// ### Example:
     /// ```
-    /// use default_vec::BitSet;
+    /// use default_vec2::BitSet;
     /// let mut s1: BitSet<usize> = BitSet::from_iter([0, 1]);
     /// let s2 = BitSet::from_iter([0, 42]);
     /// s1 |= &s2;
@@ -150,7 +149,7 @@ impl<'a, I> SubAssign<&'a BitSet> for BitSet<I> {
     ///
     /// ### Example:
     /// ```
-    /// use default_vec::BitSet;
+    /// use default_vec2::BitSet;
     /// let mut s1: BitSet<usize> = BitSet::from_iter([0, 1]);
     /// let s2 = BitSet::from_iter([0, 42]);
     /// s1 -= &s2;
@@ -169,7 +168,7 @@ impl<'a, I> BitXorAssign<&'a BitSet> for BitSet<I> {
     ///
     /// ### Example:
     /// ```
-    /// use default_vec::BitSet;
+    /// use default_vec2::BitSet;
     /// let mut s1: BitSet<usize> = BitSet::from_iter([0, 1]);
     /// let s2 = BitSet::from_iter([0, 42]);
     /// s1 ^= &s2;

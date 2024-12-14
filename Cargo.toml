@@ -1,5 +1,5 @@
 [package]
-name = "default-vec"
+name = "default-vec2"
 version = "0.1.0"
 edition = "2021"
 description = "A simple `Vec`-like data structure with default elements and a bitset built using it"

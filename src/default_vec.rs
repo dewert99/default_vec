@@ -47,6 +47,7 @@ fn test_clone_long() {
     x.clone_from(&y);
     assert_eq!(x.get(0), 0);
     assert_eq!(x.get(5), 7);
+    assert_eq!(x, y);
 }
 
 #[test]
@@ -58,6 +59,28 @@ fn test_clone_short() {
     y.clone_from(&x);
     assert_eq!(y.get(0), 3);
     assert_eq!(y.get(5), 0);
+    assert_eq!(x, y);
+}
+
+impl<T: PartialEq + Default, I> PartialEq for DefaultVec<T, I> {
+    fn eq(&self, other: &Self) -> bool {
+        let (long, short) = if self.0.len() < other.0.len() {
+            (&*other.0, &*self.0)
+        } else {
+            (&*self.0, &*other.0)
+        };
+        short == &long[..short.len()] && long[short.len()..].iter().all(|x| *x == T::default())
+    }
+}
+
+impl<T: Eq + Default, I> Eq for DefaultVec<T, I> {}
+
+#[test]
+fn test_eq() {
+    let mut x: DefaultVec<u32> = DefaultVec::default();
+    *x.get_mut(42) = 3;
+    *x.get_mut(42) = u32::default();
+    assert_eq!(x, DefaultVec::default())
 }
 
 impl<T: Debug + Default, I: Into<usize>> Debug for DefaultVec<T, I> {

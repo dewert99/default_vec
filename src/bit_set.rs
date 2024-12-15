@@ -30,6 +30,14 @@ impl<I> Clone for BitSet<I> {
     }
 }
 
+impl<I> PartialEq<Self> for BitSet<I> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
+impl<I> Eq for BitSet<I> {}
+
 #[inline]
 fn split(x: usize) -> (usize, Elt, u32) {
     let offset = (x % Elt::BITS as usize) as u32;

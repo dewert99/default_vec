@@ -31,9 +31,9 @@ impl<I> Clone for BitSet<I> {
 }
 
 #[inline]
-fn split(x: usize) -> (usize, Elt) {
+fn split(x: usize) -> (usize, Elt, u32) {
     let offset = (x % Elt::BITS as usize) as u32;
-    (x / Elt::BITS as usize, 1 << offset)
+    (x / Elt::BITS as usize, 1 << offset, offset)
 }
 
 impl<I: Into<usize>> BitSet<I> {
@@ -50,7 +50,7 @@ impl<I: Into<usize>> BitSet<I> {
     /// assert!(!s.insert(0));
     /// ```
     pub fn insert(&mut self, x: I) -> bool {
-        let (chunk_idx, mask) = split(x.into());
+        let (chunk_idx, mask, _) = split(x.into());
         let chunk = self.0.get_mut(chunk_idx);
         let res = (*chunk & mask) == 0;
         *chunk |= mask;
@@ -70,23 +70,44 @@ impl<I: Into<usize>> BitSet<I> {
     /// assert!(!s.remove(0))
     /// ```
     pub fn remove(&mut self, x: I) -> bool {
-        let (chunk_idx, mask) = split(x.into());
+        let (chunk_idx, mask, _) = split(x.into());
         let chunk = self.0.get_mut(chunk_idx);
         let res = (*chunk & mask) != 0;
         *chunk &= !mask;
         res
     }
 
+    /// Inserts `x` if `v` is true, or removes it otherwise.
+    ///
+    /// Returns whether `self` used to contain `x`
+    ///
+    /// ```rust
+    /// use default_vec2::BitSet;
+    /// let mut s: BitSet<usize> = BitSet::default();
+    /// assert!(!s.set(0, false));
+    /// assert!(!s.set(0, true));
+    /// assert!(s.set(0, true));
+    /// assert!(s.set(0, false));
+    /// ```
+    pub fn set(&mut self, x: I, v: bool) -> bool {
+        let (chunk_idx, mask, shift) = split(x.into());
+        let chunk = self.0.get_mut(chunk_idx);
+        let res = (*chunk & mask) != 0;
+        *chunk &= !mask;
+        *chunk |= (v as Elt) << shift;
+        res
+    }
+
     /// Checks if the set contains an element
     pub fn contains(&self, x: I) -> bool {
-        let (chunk_idx, mask) = split(x.into());
+        let (chunk_idx, mask, _) = split(x.into());
         let chunk = self.0.get(chunk_idx);
         (chunk & mask) != 0
     }
 
     /// Same as contains but already reserves space for `x`
     pub fn contains_mut(&mut self, x: I) -> bool {
-        let (chunk_idx, mask) = split(x.into());
+        let (chunk_idx, mask, _) = split(x.into());
         let chunk = *self.0.get_mut(chunk_idx);
         (chunk & mask) != 0
     }

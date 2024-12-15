@@ -31,10 +31,33 @@ impl<T: Clone + Default, I: Into<usize>> Clone for DefaultVec<T, I> {
         if source.capacity() > self.capacity() {
             self.reserve(source.capacity())
         }
-        for (this, source) in self.iter_mut().zip(source.iter()) {
-            this.clone_from(source)
+        self.0[..source.0.len()].clone_from_slice(&source.0);
+        for x in &mut self.0[source.0.len()..] {
+            *x = T::default()
         }
     }
+}
+
+#[test]
+fn test_clone_long() {
+    let mut x: DefaultVec<u32> = DefaultVec::default();
+    *x.get_mut(0) = 3;
+    let mut y: DefaultVec<u32> = DefaultVec::default();
+    *y.get_mut(5) = 7;
+    x.clone_from(&y);
+    assert_eq!(x.get(0), 0);
+    assert_eq!(x.get(5), 7);
+}
+
+#[test]
+fn test_clone_short() {
+    let mut x: DefaultVec<u32> = DefaultVec::default();
+    *x.get_mut(0) = 3;
+    let mut y: DefaultVec<u32> = DefaultVec::default();
+    *y.get_mut(5) = 7;
+    y.clone_from(&x);
+    assert_eq!(y.get(0), 3);
+    assert_eq!(y.get(5), 0);
 }
 
 impl<T: Debug + Default, I: Into<usize>> Debug for DefaultVec<T, I> {

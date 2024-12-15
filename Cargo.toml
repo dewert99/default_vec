@@ -1,5 +1,6 @@
 [package]
 name = "default-vec2"
+keywords = ["data-structures", "bitset"]
 version = "0.1.2"
 edition = "2021"
 description = "A simple `Vec`-like data structure with default elements and a bitset built using it"
